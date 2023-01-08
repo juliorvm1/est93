@@ -1,3 +1,6 @@
+"""
+Archivo para crear desde python la tabla t_users con la estructura necesaria
+"""
 from sqlalchemy import Table, Column
 from sqlalchemy.sql.sqltypes import Integer, String
 from config.bd import engine, meta
