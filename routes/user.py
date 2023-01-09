@@ -7,8 +7,8 @@ from cryptography.fernet import Fernet
 from schemas.user import User
 from config.bd import conn
 from models.users import t_users
-from fastapi import APIRouter, Response, status
-from starlette.status import HTTP_204_NO_CONTENT
+from fastapi import APIRouter, Response, status,HTTPException
+from starlette.status import HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 from typing import List
 user = APIRouter()
 key = Fernet.generate_key()
@@ -36,7 +36,14 @@ def create_user(nuser: User):
 
 @user.get("/users/{id}",response_model=User,tags=["Users"])
 def get_userByid(id: str):
-    return conn.execute(t_users.select().where(t_users.c.id == id)).first()
+    result= conn.execute(t_users.select().where(t_users.c.id == id)).first()    
+    if  not result:
+        #return status.HTTP_404_NOT_FOUND
+        #print (result)
+        raise HTTPException(status_code=404, detail="User not found")
+    else:
+        return result
+        
 
 
 # ruta para hacer la eliminación de un registro de la tabla t_users usando como parametro el id
